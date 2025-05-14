@@ -4,20 +4,20 @@ TFSubscriberNode::TFSubscriberNode() : Node("tf_subscriber_node") {
     tfBuffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
     tfListener_ = std::make_unique<tf2_ros::TransformListener>(*tfBuffer_);
 
-    // 设置等待变换变得可用的超时时间
+    // Set timeout for waiting transform to become available
     auto timeout = std::chrono::seconds(5);
     auto start_time = this->get_clock()->now();
 
-    // 等待 odom 到 laser_center 的变换变得可用
+    // Wait until the transform from odom to laser_center becomes available
     while (rclcpp::ok()) {
         if (this->get_clock()->now() - start_time > timeout) {
             RCLCPP_WARN(this->get_logger(), "Timeout waiting for transform from TF");
             break;
         }
         if (tfBuffer_->canTransform("odom", "laser_center", tf2::TimePointZero, std::chrono::milliseconds(100))) {
-            break; // 成功获取变换，退出循环
+            break; // Successfully obtained the transform, exit loop
         }
-        // 短暂休眠再重试
+        // Sleep briefly before retrying
         rclcpp::sleep_for(std::chrono::milliseconds(100));
     }
 }

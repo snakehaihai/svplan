@@ -4,7 +4,7 @@
   <version>0.0.1</version>
   <description>A simple ROS 2 package for road visualization in RViz.</description>
 
-  <maintainer email="your-email@example.com">Your Name</maintainer>
+  <maintainer email="2922520613@qq.com">ccwss</maintainer>
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

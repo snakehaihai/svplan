@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     executor.add_node(route_planning_node);
     executor.add_node(trajectory_opimization_node);
     executor.add_node(sdf_opimization_node);
-    executor.spin();  // 启动并运行所有节点
+    executor.spin();
     rclcpp::shutdown();
 
     return 0;

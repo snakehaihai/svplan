@@ -33,7 +33,6 @@ typedef struct
     double T;
     double Velocity;
 
-
 }car_info_;
 
 
@@ -47,30 +46,30 @@ private:
     Eigen::Vector3d findClosestPointOnSegment(int segment, Eigen::VectorXd times, Eigen::MatrixX3d b);
     void calculateWheelSettings(double vx, double vy, double& angle, double& speed);
     void Control(Eigen::Vector3d Control);
-    Eigen::MatrixXd kroneckerProduct(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B); // 计算矩阵的克罗内克积
+    Eigen::MatrixXd kroneckerProduct(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B); // Compute the Kronecker product of a matrix
     Eigen::MatrixXd matrixPower(const Eigen::MatrixXd& matrix, int power);
     void checkMatrix(Eigen::MatrixXd& eigenH);
     void isSymmetric(Eigen::MatrixXd& matrix);
 
-    //控制话题定义
+    // Control topic definitions
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr wheel_string_publisher_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr wheel_speed_publisher_;
 
-    std::shared_ptr<ControlNode> control_node_;  // control_node共享指针
-    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // tf_subscriber_node共享指针
-    // 车辆控制信息发布
-    std_msgs::msg::Float64MultiArray array_msg;     //转向控制
-    std_msgs::msg::Float64MultiArray speed_msg;     //转向控制
+    std::shared_ptr<ControlNode> control_node_;  // Shared pointer to control_node
+    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // Shared pointer to tf_subscriber_node
+    // Vehicle control message
+    std_msgs::msg::Float64MultiArray array_msg;     // Steering control
+    std_msgs::msg::Float64MultiArray speed_msg;     // Speed control
 
     car_info_ car_info;
     std::string config_yaml_path;
 
-    //MPC参数
-    int Np = 10;                   //预测步长
-    int Nc = 5;                    //控制步长
-    double T = 0.05;             //控制周期0.05s
+    // MPC parameters
+    int Np = 10;                   // Prediction horizon
+    int Nc = 5;                    // Control horizon
+    double T = 0.05;               // Control period 0.05s
     double speed_ratio;
-    Matrix Odom_Car_Matrix;     // 世界中心 -> 车辆 变换矩阵
+    Matrix Odom_Car_Matrix;        // Transform: world -> car
     Matrix Car_Odom_Matrix;
     Eigen::Vector3d u_last;
     rclcpp::TimerBase::SharedPtr timer_;

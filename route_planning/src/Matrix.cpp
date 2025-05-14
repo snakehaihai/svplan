@@ -61,10 +61,10 @@ geometry_msgs::msg::Quaternion Matrix::Quaternion_Read()
 
 void Matrix::setFromTF(geometry_msgs::msg::TransformStamped transformStamped) {
     try {
-        // 四元数
+        // Quaternion
         Quaternion = transformStamped.transform.rotation;
 
-        // 旋转矩阵
+        // Rotation matrix
         tf2::Quaternion quat(transformStamped.transform.rotation.x,
                              transformStamped.transform.rotation.y,
                              transformStamped.transform.rotation.z,
@@ -78,11 +78,11 @@ void Matrix::setFromTF(geometry_msgs::msg::TransformStamped transformStamped) {
             }
         }
 
-        // 平移矩阵
+        // Translation matrix
         auto& t = transformStamped.transform.translation;
         Translation << t.x, t.y, t.z;
 
-        // 旋转平移矩阵
+        // Rotation-translation matrix
         Rotation_Translation_Set();
 
     } catch (const std::exception& e) {

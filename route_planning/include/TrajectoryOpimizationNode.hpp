@@ -43,13 +43,14 @@ private:
     template <typename EIGENVEC>
     void backwardGradP(const Eigen::VectorXd &xi, const Eigen::Matrix3Xd &gradP, EIGENVEC &gradXi);
 
-    //话题订阅
+    // Topic subscription
     rclcpp::Subscription<astar_msgs::msg::AStarPathArray>::SharedPtr Astar_Path_Subscriber_;
-    //话题发布
-    rclcpp::Publisher<initial_optimized_msgs::msg::InitialOptimizedTrajectory>::SharedPtr Initial_Optimized_Trajectory_Publisher_;       //发布初始优化轨迹
-    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Trajectory_Opimization_Publisher_;
 
-    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // tf_subscriber_node共享指针
+    // Topic publishing
+    rclcpp::Publisher<initial_optimized_msgs::msg::InitialOptimizedTrajectory>::SharedPtr Initial_Optimized_Trajectory_Publisher_; // Publish initial optimized trajectory
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Trajectory_Opimization_Publisher_;                          // Publish trajectory optimization markers
+
+    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // Shared pointer to tf_subscriber_node
 
     std::string config_yaml_path;
     YAML::Node config;
@@ -63,7 +64,8 @@ private:
     Eigen::Matrix3Xd points;        
     Eigen::VectorXd times;
 
-    Matrix Car_Odom_Matrix;      // 车辆 -> 世界中心 变换矩阵
+    Matrix Car_Odom_Matrix;      // Car -> World frame transform matrix
+
     Eigen::MatrixXd Car_Odom_Rotation_Translation_Matrix;
     std_msgs::msg::Header Header;
 

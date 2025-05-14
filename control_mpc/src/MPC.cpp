@@ -6,13 +6,13 @@
 #include <vector>
 MpcNode::MpcNode(std::shared_ptr<ControlNode> control_node, std::shared_ptr<TFSubscriberNode> tf_subscriber_node)
         : Node("control_node"), control_node_(control_node), tf_subscriber_node_(tf_subscriber_node) {
-    // 初始化订阅者
+    // Initialize subscriber
     config_yaml_path = "/root/PersonalData/Program/multi-axle-all-wheel-steering-vehicles_ws/src/control_mpc/config/size.yaml";
     YAML::Node config = YAML::LoadFile(config_yaml_path);
     double T = config["T"].as<double>() * 1000;
     timer_ = this->create_wall_timer(std::chrono::milliseconds(static_cast<int>(T)), std::bind(&MpcNode::TimerCallback, this));
 
-    // 初始化发布者
+    // Initialize publisher
     wheel_string_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/string_position_controller/commands", 10);
     wheel_speed_publisher_ =  this->create_publisher<std_msgs::msg::Float64MultiArray>("/wheel_velocity_controller/commands", 10);
 
@@ -31,7 +31,6 @@ void MpcNode::TimerCallback()
 {
     if(control_node_->Trajectory.init_points.cols() == 0)
     {
-        // ... (stop logic as in your original code)
         array_msg.data.assign(10, 0.0);
         speed_msg.data.assign(10, 0.0);
         wheel_string_publisher_->publish(array_msg);
@@ -43,7 +42,6 @@ void MpcNode::TimerCallback()
     YAML::Node config = YAML::LoadFile(config_yaml_path);
     if(config["stop"].as<bool>() == true)
     {
-        // ... (stop logic as in your original code)
         control_node_->control_points.resize(3, 0);
         array_msg.data.assign(10, 0.0);
         speed_msg.data.assign(10, 0.0);
@@ -56,7 +54,6 @@ void MpcNode::TimerCallback()
     Odom_Car_Matrix = tf_subscriber_node_ -> Matrix_Read("car_base", "odom");
     Car_Odom_Matrix = tf_subscriber_node_ -> Matrix_Read("odom", "car_base");
 
-    // ... (Trajectory transformation and MINCO setup as in your original code) ...
     Car_Trajectory_Rotation_Translation_Matrix = Odom_Car_Matrix.Rotation_Translation_Read() * control_node_->Trajectory.Odom_Car_Rotation_Translation_Matrix;
     Car_Trajectory_Rotation_Matrix = Car_Trajectory_Rotation_Translation_Matrix.block(0, 0, 3, 3);
     Eigen::MatrixXd init_points = Eigen::MatrixXd::Zero(4, control_node_->Trajectory.init_points.cols());
@@ -79,14 +76,13 @@ void MpcNode::TimerCallback()
     Eigen::MatrixXd MidPoints = Transformed_Point_Map.block(0, 1, 3, Transformed_Point_Map.cols()-2);
     minco.setConditions(initState, finalState, control_node_->Trajectory.pieceN);
     minco.setParameters(MidPoints, control_node_->Trajectory.times);
-    double T_step = config["T"].as<double>(); // MPC time step, T was used for this in first example
+    double T_step = config["T"].as<double>();
     int total_steps_trajectory = (int)(control_node_->Trajectory.T_total / T_step);
     Np = std::min(config["Np"].as<int>(), total_steps_trajectory);
     Nc = std::min(config["Nc"].as<int>(), Np);
 
     if (Np <= 0 || Nc <= 0) {
         RCLCPP_WARN(this->get_logger(), "Np or Nc is zero or negative. Skipping MPC.");
-        // Publish zero commands or maintain last command
         array_msg.data.assign(10, 0.0);
         speed_msg.data.assign(10, 0.0);
         wheel_string_publisher_->publish(array_msg);
@@ -114,7 +110,7 @@ void MpcNode::TimerCallback()
     for(int i=0; i< control_points_ref.cols(); i++)
     {
         Eigen::Vector3d P_ref = control_points_ref.col(i);
-        if(P_ref.x() >= 0) // Find first point ahead or at the vehicle
+        if(P_ref.x() >= 0)
         {
             min_index = i;
             break;
@@ -155,7 +151,7 @@ void MpcNode::TimerCallback()
     {
         if (min_index + offset + row < control_points_ref.cols()) {
             Yt.block(row * 3, 0, 3, 1) = control_points_ref.col(min_index + offset + row);
-        } else { // Should not happen if Np is adjusted correctly
+        } else {
             Yt.block(row * 3, 0, 3, 1) = control_points_ref.col(control_points_ref.cols()-1);
         }
     }
@@ -304,7 +300,7 @@ void MpcNode::TimerCallback()
     OsqpEigen::Solver solver;
     solver.settings()->setVerbosity(false);
     solver.settings()->setWarmStart(true);
-    solver.settings()->setAlpha(1.0); // Common setting from example 1, OSQP default is 1.6
+    solver.settings()->setAlpha(1.0);
 
     solver.data()->setNumberOfVariables(num_decision_vars_total);
     solver.data()->setNumberOfConstraints(n_total_osqp_constraints);
@@ -341,18 +337,19 @@ void MpcNode::TimerCallback()
     RCLCPP_INFO(this->get_logger(), "Control output: vx=%.2f, vy=%.2f, w=%.2f", control_output(0), control_output(1), control_output(2));
     Control(control_output);
 }
+
 void MpcNode::findCurrentSegmentAndLocalTime(double t, int & segment, double & local_t, int pieceN, Eigen::VectorXd times)
 {
     int left = 0;
     int right = pieceN - 1;
     double total_time = 0.0;
 
-    // 二分查找
+    // Binary search
     while (left <= right) {
         int mid = left + (right - left) / 2;
         double segment_end_time = 0.0;
 
-        // 计算到mid段为止的总时间
+        // Compute cumulative time up to the mid segment
         for (int i = 0; i <= mid; i++) {
             segment_end_time += times[i];
         }
@@ -368,7 +365,7 @@ void MpcNode::findCurrentSegmentAndLocalTime(double t, int & segment, double & l
         }
     }
 
-    // 如果时间超过了所有轨迹段的总时间，则返回最后一个段
+    // If time exceeds total duration, return the last segment
     if (left > right) {
         segment = pieceN - 1;
         total_time = 0.0;
@@ -376,7 +373,7 @@ void MpcNode::findCurrentSegmentAndLocalTime(double t, int & segment, double & l
             total_time += times[i];
         }
     }
-    // 计算局部时间（相对于当前轨迹段的时间）
+    // Compute local time within the current segment
     local_t = t - total_time;
 }
 
@@ -423,7 +420,7 @@ void MpcNode::calculateWheelSettings(double vx, double vy, double& angle, double
     if (vx < 0)             speed = -speed;
 }
 
-// 计算矩阵的幂
+// Compute the power of a matrix
 Eigen::MatrixXd MpcNode::matrixPower(const Eigen::MatrixXd& matrix, int power)
 {
     if (matrix.rows() != matrix.cols()) {
@@ -439,7 +436,7 @@ Eigen::MatrixXd MpcNode::matrixPower(const Eigen::MatrixXd& matrix, int power)
     return result;
 }
 
-// 计算矩阵的克罗内克积
+// Compute the Kronecker product of two matrices
 Eigen::MatrixXd MpcNode::kroneckerProduct(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
 {
     Eigen::MatrixXd result(A.rows() * B.rows(), A.cols() * B.cols());
@@ -453,7 +450,7 @@ Eigen::MatrixXd MpcNode::kroneckerProduct(const Eigen::MatrixXd& A, const Eigen:
     return result;
 }
 
-//检查矩阵类型（正定、半正定、负定、不定）
+// Check matrix type (positive definite, semi-definite, negative, indefinite)
 void MpcNode::checkMatrix(Eigen::MatrixXd& eigenH)
 {
 
@@ -482,7 +479,6 @@ void MpcNode::checkMatrix(Eigen::MatrixXd& eigenH)
         std::cout << "The matrix is negative semidefinite." << std::endl;
     } else {
         std::cout << "The matrix is indefinite." << std::endl;
-        // 检查并调整 H 矩阵的正定性
         Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(eigenH);
         Eigen::VectorXd eigenvalues = eigenSolver.eigenvalues();
         double minEigenvalue = eigenvalues.minCoeff();
@@ -499,7 +495,7 @@ void MpcNode::checkMatrix(Eigen::MatrixXd& eigenH)
     }
 }
 
-// 检查是否为方阵
+// Check if matrix is square
 void MpcNode::isSymmetric(Eigen::MatrixXd& matrix)
 {
     if (matrix.rows() != matrix.cols()) {
@@ -507,15 +503,15 @@ void MpcNode::isSymmetric(Eigen::MatrixXd& matrix)
     } else {
         std::cout << "The matrix is square." << std::endl;
     }
-    // 检查矩阵是否等于其转置
+    // Check if matrix equals its transpose
     if (matrix.isApprox(matrix.transpose())) {
         std::cout << "The matrix is equal to its transpose." << std::endl;
     } else {
         std::cout << "The matrix is not equal to its transpose." << std::endl;
-        // 使矩阵对称
+        // Make the matrix symmetric
         matrix = (matrix + matrix.transpose()) / 2.0;
-        std::cout << "The matrix has been made symmetric." << std::endl;
-        // 再次检查对称性
+        std::cout << "The matrix has been made symmetric." << std::endl;     
+        // Re-check symmetry
         if (matrix.isApprox(matrix.transpose())) {
             std::cout << "The symmetrized matrix is now equal to its transpose." << std::endl;
         } else {

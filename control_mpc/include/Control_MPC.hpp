@@ -30,7 +30,7 @@ public:
     Eigen::Matrix3Xd control_points;
 private:
     void Callback(const sdf_optimized_msgs::msg::SDFOptimizedTrajectory::ConstSharedPtr & traj);
-    //话题订阅
+    
     rclcpp::Subscription<sdf_optimized_msgs::msg::SDFOptimizedTrajectory>::SharedPtr Traj_Subscriber_;
 
     std::string config_yaml_path;

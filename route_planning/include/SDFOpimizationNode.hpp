@@ -50,22 +50,22 @@ private:
     void visualizeTrajectory(const Eigen::MatrixXd &b, const Eigen::VectorXd &times);
     Eigen::Vector3d generatePolynomialTrajectory(const Eigen::MatrixXd& coefficients, const Eigen::VectorXd& times, double t);
 
-    //话题订阅
+    // Topic subscription
     rclcpp::Subscription<initial_optimized_msgs::msg::InitialOptimizedTrajectory>::SharedPtr Init_Traj_Subscriber_;
-    //话题发布
-    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Swept_Volume_Publisher_;             //发布SW图
-    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Trajectory_Opimization_Publisher_;   //发布SW轨迹
-    rclcpp::Publisher<sdf_optimized_msgs::msg::SDFOptimizedTrajectory>::SharedPtr SDF_Opimization_Publisher_;   //发布最终轨迹
-    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // tf_subscriber_node共享指针
 
+    // Topic publishing
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Swept_Volume_Publisher_;             // Publish swept volume markers
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Trajectory_Opimization_Publisher_;   // Publish optimized trajectory markers
+    rclcpp::Publisher<sdf_optimized_msgs::msg::SDFOptimizedTrajectory>::SharedPtr SDF_Opimization_Publisher_;   // Publish final optimized trajectory
 
+    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // Shared pointer to tf_subscriber_node
 
     Optimized_Trajectory_ traj;
     std::string config_yaml_path;
     YAML::Node config;
 
-    Matrix Car_Odom_Matrix;      // 车辆 -> 世界中心 变换矩阵
-    Matrix Odom_Car_Matrix;      // 车辆 -> 世界中心 变换矩阵
+    Matrix Car_Odom_Matrix;      // Car -> World frame transform matrix
+    Matrix Odom_Car_Matrix;      // Car -> World frame transform matrix
     Eigen::MatrixXd Car_Odom_Rotation_Translation_Matrix;
     Eigen::MatrixXd Odom_Car_Rotation_Translation_Matrix;
     geometry_msgs::msg::Quaternion Car_Quaternion;

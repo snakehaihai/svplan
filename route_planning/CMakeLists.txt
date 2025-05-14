@@ -1,25 +1,24 @@
-# 设置CMake的最低版本要求
+# Set the minimum required version of CMake
 cmake_minimum_required(VERSION 3.8)
 
-# 定义项目名称及使用的语言
+# Define the project name and used languages
 project(route_planning LANGUAGES CXX CUDA Fortran)
 
-# 设置CUDA相关变量
+# Set CUDA-related variables
 set(CMAKE_CUDA_ARCHITECTURES 60 61 62 70 72 75 86 89 90)
 set(CMAKE_CUDA_COMPILER /usr/local/cuda/bin/nvcc)
 
-# 设置编译选项
+# Set compiler options
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  # add_compile_options(-Wall -Wextra -Wpedantic -g -march=native) #调试信息
+  # add_compile_options(-Wall -Wextra -Wpedantic -g -march=native) # Debug info
   add_compile_options(-Wall -Wextra -Wpedantic -O3 -march=native)
 endif()
 
-
-# 查找CUDA包和设置相关变量
+# Find CUDA package and set related variables
 find_package(CUDA REQUIRED)
 set(CUDA_LIB_DIR "/usr/local/cuda/lib64")
 
-# 查找需要的包
+# Find required packages
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -38,10 +37,10 @@ find_package(PCL REQUIRED COMPONENTS common io filters segmentation visualizatio
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 
-# 包含头文件目录
+# Include header directories
 include_directories(include
   ${CUDA_INCLUDE_DIRS}
-  ${YAML_CPP_INCLUDE_DIRS}      # YAML-CPP头文件目录
+  ${YAML_CPP_INCLUDE_DIRS}      # YAML-CPP headers
   ${EIGEN3_INCLUDE_DIR}
   ${GSL_INCLUDE_DIRS}
   ${a_star_msgs_INCLUDE_DIRS}
@@ -54,7 +53,7 @@ set(FORTRAN_SOURCES
     include/utils/lmbm_sub.f
 )
 
-# 添加可执行文件
+# Add executable
 add_executable(route_planning 
   src/A_Star_Node.cpp
   src/TFSubscriberNode.cpp
@@ -67,25 +66,26 @@ add_executable(route_planning
   ${FORTRAN_SOURCES}
 )
 
-# 链接库文件
+# Link libraries to target
 ament_target_dependencies(route_planning
-  rclcpp                      # ROS2 C++客户端库
-  std_msgs                    # 标准消息
-  sensor_msgs                 # 传感器消息
-  geometry_msgs               # Rviz Goal消息
+  rclcpp                      # ROS2 C++ client library
+  std_msgs                    # Standard messages
+  sensor_msgs                 # Sensor messages
+  geometry_msgs               # Rviz Goal messages
   astar_msgs
   initial_optimized_msgs
   sdf_optimized_msgs
   visualization_msgs
-  message_filters             # 消息过滤器
-  yaml-cpp                    # YAML-CPP库
+  message_filters             # Message filters
+  yaml-cpp                    # YAML-CPP library
   nav_msgs
   pcl_conversions
   PCL
   tf2_ros
   tf2_geometry_msgs
 )
-# 链接库
+
+# Link libraries
 target_link_libraries(route_planning
   yaml-cpp
   cudart
@@ -95,10 +95,10 @@ target_link_libraries(route_planning
   gfortran
 )
 
-# 安装可执行文件到指定目录
+# Install executable to the specified directory
 install(TARGETS route_planning
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# 定义ament包，这个指令必须在最后
+# Declare ament package (must be at the end)
 ament_package()

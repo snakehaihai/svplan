@@ -60,30 +60,29 @@ private:
     void Callback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr & point_cloud_msg, const geometry_msgs::msg::PoseStamped::ConstSharedPtr & goal_msg);
     std::vector<A_Star_Path_> AStarSearch(const std::vector<std::vector<int>>& grid_map, const std::pair<int, int>& start, const std::pair<int, int>& goal, double grid_resolution_meters);
     bool isPointOnRoad(const std::array<double, 2>& point, const std::array<double, 2>& start, const std::array<double, 2>& end, double width);
-    // 定义同步策略别名
+    // Define sync policy alias
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::PointCloud2, geometry_msgs::msg::PoseStamped> SyncPolicy;
     typedef message_filters::Synchronizer<SyncPolicy> MySynchronizer;
-    std::shared_ptr<MySynchronizer> sync_; // 现在是类级别的别名
+    std::shared_ptr<MySynchronizer> sync_; // Now a class-level alias
 
     message_filters::Subscriber<sensor_msgs::msg::PointCloud2> point_cloud_msg_;
     message_filters::Subscriber<geometry_msgs::msg::PoseStamped> goal_msg_;
 
-    //控制话题定义
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr Filter_Publisher;   //发布滤波点云话题
-    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr Road_Side_Publisher_;       //发布道路边界障碍点云
-    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr A_Star_Path_Rviz_Publisher_;       //发布A*路径
-    rclcpp::Publisher<astar_msgs::msg::AStarPathArray>::SharedPtr A_Star_Path_Publisher_;       //发布A*路径
-    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr A_Star_Map_Publisher_;       //发布A*地图
+    // Define control topics
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr Filter_Publisher;             // Publish filtered point cloud topic
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr Road_Side_Publisher_;         // Publish road boundary obstacle point cloud
+    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr A_Star_Path_Rviz_Publisher_;            // Publish A* path to Rviz
+    rclcpp::Publisher<astar_msgs::msg::AStarPathArray>::SharedPtr A_Star_Path_Publisher_;     // Publish A* path
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr A_Star_Map_Publisher_; // Publish A* map
 
-    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // tf_subscriber_node共享指针
+    std::shared_ptr<TFSubscriberNode> tf_subscriber_node_;  // Shared pointer to tf_subscriber_node
     std::vector<A_Star_Path_> A_Star_Path;
 
     std::string config_yaml_path;
     YAML::Node config;
-    Matrix Lidar_Car_Matrix;    // 激光雷达 -> 车辆 变换矩阵
-    Matrix Odom_Car_Matrix;     // 世界中心 -> 车辆 变换矩阵
-    Matrix Car_Odom_Matrix;      // 车辆 -> 世界中心 变换矩阵
-
+    Matrix Lidar_Car_Matrix;    // Lidar -> Car transform matrix
+    Matrix Odom_Car_Matrix;     // World frame -> Car transform matrix
+    Matrix Car_Odom_Matrix;     // Car -> World frame transform matrix
 
     std::vector<std::tuple<std::array<double, 2>, std::array<double, 2>>> 
     detectRoadSegments(double x_min, double x_max, double y_min, double y_max, 
@@ -94,11 +93,11 @@ private:
             auto [start, end] = road;
             double x1 = start[0], y1 = start[1];
             double x2 = end[0], y2 = end[1];
-
-            // 检查线段是否与矩形相交
+        
+            // Check if the line segment intersects with the rectangle
             double t_min = 0, t_max = 1;
             
-            // 检查 x 方向
+            // Check x direction
             if (std::abs(x2 - x1) > 1e-6) {
                 double tx1 = (x_min - x1) / (x2 - x1);
                 double tx2 = (x_max - x1) / (x2 - x1);
@@ -107,8 +106,8 @@ private:
             } else if (x1 < x_min || x1 > x_max) {
                 continue;
             }
-
-            // 检查 y 方向
+        
+            // Check y direction
             if (std::abs(y2 - y1) > 1e-6) {
                 double ty1 = (y_min - y1) / (y2 - y1);
                 double ty2 = (y_max - y1) / (y2 - y1);
@@ -117,13 +116,13 @@ private:
             } else if (y1 < y_min || y1 > y_max) {
                 continue;
             }
-
+        
             if (t_max >= t_min) {
                 double new_x1 = x1 + t_min * (x2 - x1);
                 double new_y1 = y1 + t_min * (y2 - y1);
                 double new_x2 = x1 + t_max * (x2 - x1);
                 double new_y2 = y1 + t_max * (y2 - y1);
-
+        
                 result.push_back({
                     {std::max(x_min, std::min(x_max, new_x1)), 
                     std::max(y_min, std::min(y_max, new_y1))},
@@ -132,7 +131,6 @@ private:
                 });
             }
         }
-
         return result;
     }
 

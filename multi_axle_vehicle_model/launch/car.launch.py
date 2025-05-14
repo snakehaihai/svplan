@@ -8,10 +8,10 @@ from launch_ros.substitutions import FindPackageShare
 import os
 
 def generate_launch_description():
-    # 启用全局 use_sim_time 参数
+    # Enable global use_sim_time parameter
     use_sim_time = True
 
-    # 启动gazebo
+    # Launch Gazebo
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                 get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
@@ -29,7 +29,7 @@ def generate_launch_description():
         FindExecutable(name='xacro'), ' ', xacro_path
     ])
 
-    # 发布 robot_description 到 Gazebo 和 RViz
+    # Publish robot_description to Gazebo and RViz
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -38,19 +38,19 @@ def generate_launch_description():
         name='robot_state_publisher'
     )
 
-    # 定义spawn_entity节点
+    # Define spawn_entity node
     spawn_entity = Node(
         package='gazebo_ros', 
         executable='spawn_entity.py',
         arguments=[
             '-topic', 'robot_description',
             '-entity', 'robot_gazebo',
-            '-x', '45',  # x 位置
-            '-y', '14.0',    # y 位置
-            '-z', '1.678', # z 位置
-            '-R', '0.0',    # roll
-            '-P', '0.0',    # pitch
-            '-Y', '-1.5707963'   # yaw
+            '-x', '45',        # x position
+            '-y', '14.0',      # y position
+            '-z', '1.678',     # z position
+            '-R', '0.0',       # roll
+            '-P', '0.0',       # pitch
+            '-Y', '-1.5707963' # yaw
         ],
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
@@ -95,13 +95,13 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        SetLaunchConfiguration('use_sim_time', str(use_sim_time)),  # 设置全局use_sim_time
-        gazebo,                 # 启动gazebo
-        robot_state_publisher,  # 启动robot_state_publisher
-        spawn_entity,           # 启动spawn_entity
-        joint_state_controller, # 启动joint_state_controller
-        string_position_controller, # 启动string_position_controller
-        wheel_velocity_controller,  # 启动wheel_velocity_controller
-        rviz,                    # 启动RViz
+        SetLaunchConfiguration('use_sim_time', str(use_sim_time)),  # Set global use_sim_time
+        gazebo,                      # Launch Gazebo
+        robot_state_publisher,       # Launch robot_state_publisher
+        spawn_entity,                # Launch spawn_entity
+        joint_state_controller,      # Launch joint_state_controller
+        string_position_controller,  # Launch string_position_controller
+        wheel_velocity_controller,   # Launch wheel_velocity_controller
+        rviz,                        # Launch RViz
         road_visualization
     ])

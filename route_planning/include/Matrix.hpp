@@ -19,10 +19,10 @@ public:
     void setFromTF(geometry_msgs::msg::TransformStamped transformStamped);
 
 private:
-    geometry_msgs::msg::Quaternion Quaternion;  // 四元数
-    Eigen::Matrix3d Rotation;                   // 旋转矩阵3*3
-    Eigen::Vector3d Translation;                // 平移矩阵3*1
-    Eigen::MatrixXd Rotation_Translation;       // 旋转平移矩阵3*4
+    geometry_msgs::msg::Quaternion Quaternion;  // Quaternion
+    Eigen::Matrix3d Rotation;                   // 3x3 rotation matrix
+    Eigen::Vector3d Translation;                // 3x1 translation vector
+    Eigen::MatrixXd Rotation_Translation;       // 3x4 rotation-translation matrix
 };
 
 #endif // MATRIX_HPP

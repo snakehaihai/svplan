@@ -4,11 +4,11 @@
   <version>0.0.1</version>
   <description>A simple Gazebo plugin to publish odometry data</description>
 
-  <maintainer email="you@example.com">Your Name</maintainer>
+  <maintainer email="2922520613@qq.com">ccwss</maintainer>
   <license>Apache 2.0</license>
 
   <url type="website">http://example.com</url>
-  <author email="you@example.com">Your Name</author>
+  <author email="2922520613@qq.com">ccwss</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
