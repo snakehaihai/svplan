@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<robot name="track" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <link name="odom"/>
+
+  <link name="track_link">
+    <visual>
+      <origin xyz="-103 -153 0" rpy="1.5708 0 1.5708"/>
+      <geometry>
+        <mesh filename="package://multi_axle_vehicle_model/meshes/stl/track1.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="odom_to_track" type="fixed">
+    <parent link="odom"/>
+    <child link="track_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

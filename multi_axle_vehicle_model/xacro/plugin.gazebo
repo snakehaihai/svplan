@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot>
+    <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+            <robotNamespace>/car</robotNamespace>
+            <parameters>$(find multi_axle_vehicle_model)/control/control.yaml</parameters>
+
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="odom_plugin" filename="libodom_plugin.so">
+            <odom_frame>odom</odom_frame>
+            <base_frame>car_base</base_frame>
+            <update_rate>50</update_rate>
+        </plugin>
+    </gazebo>
+
+
+
+</robot>

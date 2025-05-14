@@ -1,0 +1,45 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_controller:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    string_position_controller:
+      type: position_controllers/JointGroupPositionController
+
+    wheel_velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+string_position_controller:
+  ros__parameters:
+    joints: 
+      - left_string_1_joint
+      - left_string_2_joint
+      - left_string_3_joint
+      - left_string_4_joint
+      - left_string_5_joint
+      - right_string_1_joint
+      - right_string_2_joint
+      - right_string_3_joint
+      - right_string_4_joint
+      - right_string_5_joint
+    interfaces:
+      - position
+    pid: {p: 6000, i: 400, d: 80}
+
+wheel_velocity_controller:
+  ros__parameters:
+    joints:
+      - left_wheel_1_joint
+      - left_wheel_2_joint
+      - left_wheel_3_joint
+      - left_wheel_4_joint
+      - left_wheel_5_joint
+      - right_wheel_1_joint
+      - right_wheel_2_joint
+      - right_wheel_3_joint
+      - right_wheel_4_joint
+      - right_wheel_5_joint
+
+
