@@ -148,14 +148,6 @@ ros2 run control_mpc control_mpc
 ![Simulation Result](images/2.jpg)
 
 
-Docker Image
-------------
-
-A pre-configured Docker image is available:
-```bash
-docker push ccwssplus/svplan:latest
-```
-
 Citation
 --------
 
