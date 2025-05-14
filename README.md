@@ -1,14 +1,13 @@
 # svplan
-
-This is our repository for 'Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs.'
-=======
 Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle AMRs
 ==============================================================================
-
 This repository contains the official implementation of the paper:
 "Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs"
 arXiv:2412.16875v2
-
+<p align="center">
+  <img src="images/1.gif" alt="Simulation Result">
+  <img src="images/2.gif" alt="Simulation Result">
+</p>
 Tested Environment
 ------------------
 
