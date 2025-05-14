@@ -93,7 +93,7 @@ git clone https://github.com/ccwss-maker/svplan.git
 
 2. Copy Gazebo models:
 ```bash
-cp -r svplan/multi_axle_vehicle_model/worlds/models ~/.gazebo/
+cp -r svplan/multi_axle_vehicle_model/worlds/models/ ~/.gazebo/
 ```
 
 3. Manually update the `config_yaml_path` in the following 5 source files:
