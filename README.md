@@ -117,13 +117,22 @@ src/svplan/control_mpc/src/MPC.cpp
 config_yaml_path = "/absolute/path/to/your/multi-axle-all-wheel-steering-vehicles_ws/src/control_mpc/config/size.yaml";
 ```
 
-4. Build the workspace:
+4. Also update the plugin path in the following xacro file:
+
+```xml
+multi_axle_vehicle_model/xacro/laser-32.xacro
+
+<!-- Replace with your actual path -->
+<plugin name="gazebo_laser_controller" filename="/absolute/path/to/multi-axle-all-wheel-steering-vehicles_ws/install/gazebo_ros_velodyne_changed/lib/libgazebo_ros_velodyne_changed.so"/>
+```
+
+5. Build the workspace:
 ```bash
 cd ~/multi-axle-all-wheel-steering-vehicles_ws
 colcon build
 ```
 
-5. Source setup script:
+6. Source setup script:
 ```bash
 echo "source ~/multi-axle-all-wheel-steering-vehicles_ws/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
