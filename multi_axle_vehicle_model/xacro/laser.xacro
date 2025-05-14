@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<robot name="laser" xmlns:xacro="http://www.ros.org/wiki/xacro">
+      
+    <xacro:property name="laser_l" value="0.01"/>
+    <xacro:property name="laser_m" value="0.1"/>
+
+    <xacro:macro name="laser_base" params="name">
+        <link name="${name}">
+            <inertial>
+                <mass value="${laser_m}"/>
+                <origin rpy="0  0  0" xyz="0  0  0"/>
+                <inertia    ixx="${laser_m/12*(laser_l*laser_l+laser_l*laser_l)}" ixy="0" 
+                                    iyy="${laser_m/12*(laser_l*laser_l+laser_l*laser_l)}" ixz="0"
+                                    izz="${laser_m/12*(laser_l*laser_l+laser_l*laser_l)}" iyz="0" />
+            </inertial>
+            <collision name="collision">
+                <origin rpy="0  0  0" xyz="0 0 0"/>
+                <geometry>
+                    <box size="${laser_l} ${laser_l} ${laser_l}"/>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <origin rpy="0  0  0" xyz="0 0 0"/>
+                <geometry>
+                    <box size="${laser_l} ${laser_l} ${laser_l}"/>
+                </geometry>
+            </visual>
+        </link> 
+    </xacro:macro>
+
+    
+    <xacro:macro name="laser_sensor" params="name">
+        <gazebo reference="${name}">
+            <sensor type="ray" name="${name}_sensor">
+                <pose>0 0 0 0 0 0</pose>
+                <update_rate>100</update_rate>
+                <visualize>true</visualize>
+                <ray>
+                    <scan>
+                        <horizontal>
+                            <samples>1</samples>
+                            <resolution>1</resolution>
+                            <min_angle>0</min_angle>
+                            <max_angle>0</max_angle>
+                        </horizontal>
+                    </scan>
+                    <range>
+                        <min>0.006</min>
+                        <max>100.0</max>
+                        <resolution>0.001</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0</mean>
+                        <stddev>0</stddev>
+                    </noise>
+                </ray>
+                <plugin name="${name}_controller" filename="libgazebo_ros_ray_sensor.so">
+                    <ros>
+                        <namespace>/car</namespace>
+                        <argument>${name}/scan:=scan</argument>
+                    </ros>
+                    <frame_name>${laser_link}</frame_name>
+                    <output_type>sensor_msgs/LaserScan</output_type>
+                </plugin>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:laser_base name="laser_1"/>
+    <xacro:laser_base name="laser_2"/>
+    <xacro:laser_base name="laser_3"/>
+    <xacro:laser_base name="laser_4"/>
+
+    <xacro:laser_sensor name="laser_1"/>
+    <xacro:laser_sensor name="laser_2"/>
+    <xacro:laser_sensor name="laser_3"/>
+    <xacro:laser_sensor name="laser_4"/>
+
+</robot>

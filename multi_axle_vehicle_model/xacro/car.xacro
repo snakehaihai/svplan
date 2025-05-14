@@ -1,0 +1,288 @@
+<?xml version="1.0"?>
+<robot name="car" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="m_wheel" value="10"/>
+    <xacro:property name="m_string" value="50"/>
+    <xacro:property name="m_car" value="200"/>
+    <xacro:property name="wheel_r" value="0.325"/>
+    <xacro:property name="string_r" value="0.05"/>
+    <xacro:property name="car_x" value="8.0665"/>
+    <xacro:property name="car_y" value="2.73"/>
+    <xacro:property name="car_z" value="0.65"/>
+    
+    <xacro:macro name="wheel_joint" params="parent child x y z">
+        <joint name="${child}_joint" type="continuous">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <origin rpy="0  0  0" xyz="${x} ${y} ${z}"/>
+            <axis xyz="0 1 0"/>
+            <limit effort="5000" velocity="10" /> 
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="string_joint" params="parent child x y z">
+        <joint name="${child}_joint" type="revolute">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="5000" lower="${-PI/6}" upper="${PI/6}" velocity="10"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="wheel" params="name">
+        <link name="${name}">
+            <inertial>
+                <mass value="${m_wheel}"/>
+                <origin rpy="0  0  0" xyz="0.000026  0.000052  0.000026"/>
+                <inertia    ixx="1.695" ixy="0" 
+                            iyy="0.621" ixz="0"
+                            izz="1.695"      iyz="0" />
+            </inertial>
+            <collision name="collision">
+                <origin rpy="0  0  0" xyz="0  0  0"/>
+                <geometry>
+                    <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/wheel.stl"/>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <origin rpy="0  0  0" xyz="0  0  0"/>
+                <geometry>
+                    <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/wheel.stl"/>
+                </geometry>
+            </visual>
+        </link>
+    </xacro:macro>
+
+    <xacro:macro name="string" params="name">
+        <link name="${name}">
+            <inertial>
+                <mass value="${m_string}"/>
+                <origin rpy="0  0  0" xyz="-0.043511  -0.000468  -0.689442"/>
+                <inertia    ixx="8.154" ixy="0.001" 
+                            iyy="7.679" ixz="-1.285"
+                            izz="2.823"  iyz="-0.008" />
+            </inertial>
+            <collision name="collision">
+                <origin rpy="0  0  0" xyz="0  0  0"/>
+                <geometry>
+                    <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/string.stl"/>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <origin rpy="0  0  0" xyz="0  0  0"/>
+                <geometry>
+                    <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/string.stl"/>
+                </geometry>
+            </visual>
+        </link>
+    </xacro:macro>
+    
+    <xacro:macro name="motor" params="name ">
+        <transmission name="${name}_tran">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${name}_joint">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${name}_motor">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <link name="car_base">
+        <inertial>
+            <mass value="${m_car}"/>
+            <origin rpy="0  0  0" xyz="-0.076908  0.019812  -0.247156"/>
+            <inertia    ixx="89.914" ixy="15.396" 
+                        iyy="989.961" ixz="-24.821"
+                        izz="1059.194" iyz="-0.553" />
+        </inertial>
+        <collision name="collision">
+            <origin rpy="0  0  0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/car.stl"/>
+            </geometry>
+        </collision>
+        <visual name="visual">
+            <origin rpy="0  0  0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="$(find multi_axle_vehicle_model)/meshes/stl/car.stl"/>
+            </geometry>
+        </visual>
+        <depend package="tf"/>
+        <depend package="nav_msgs"/>
+    </link>
+
+    <joint name="laser_joint" type="fixed">
+        <parent link="car_base"/>
+        <child link="laser_base"/>
+        <origin rpy="0 0 0" xyz="4.3 0 -1"/>
+    </joint>
+
+    <xacro:wheel name="left_wheel_1"/>
+    <xacro:wheel name="left_wheel_2"/>
+    <xacro:wheel name="left_wheel_3"/>
+    <xacro:wheel name="left_wheel_4"/>
+    <xacro:wheel name="left_wheel_5"/>
+    <xacro:wheel name="right_wheel_1"/>
+    <xacro:wheel name="right_wheel_2"/>
+    <xacro:wheel name="right_wheel_3"/>
+    <xacro:wheel name="right_wheel_4"/>
+    <xacro:wheel name="right_wheel_5"/>
+
+    <xacro:string name="left_string_1"/>
+    <xacro:string name="left_string_2"/>
+    <xacro:string name="left_string_3"/>
+    <xacro:string name="left_string_4"/>
+    <xacro:string name="left_string_5"/>
+    <xacro:string name="right_string_1"/>
+    <xacro:string name="right_string_2"/>
+    <xacro:string name="right_string_3"/>
+    <xacro:string name="right_string_4"/>
+    <xacro:string name="right_string_5"/>
+
+    <xacro:string_joint parent="car_base" child="left_string_1"    x="1.33679" y="-0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="left_string_2"    x="0.29679" y="-0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="left_string_3"    x="-0.74321" y="-0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="left_string_4"    x="-1.78321" y="-0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="left_string_5"    x="-2.82321" y="-0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="right_string_1" x="1.33679" y="0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="right_string_2" x="0.29679" y="0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="right_string_3" x="-0.74321" y="0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="right_string_4" x="-1.78321" y="0.845" z="-0.13"/>
+    <xacro:string_joint parent="car_base" child="right_string_5" x="-2.82321" y="0.845" z="-0.13"/>
+
+    <xacro:wheel_joint parent="left_string_1" child="left_wheel_1"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="left_string_2" child="left_wheel_2"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="left_string_3" child="left_wheel_3"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="left_string_4" child="left_wheel_4"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="left_string_5" child="left_wheel_5"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="right_string_1" child="right_wheel_1"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="right_string_2" child="right_wheel_2"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="right_string_3" child="right_wheel_3"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="right_string_4" child="right_wheel_4"  x="0.04368" y="0" z="-0.95342"/>
+    <xacro:wheel_joint parent="right_string_5" child="right_wheel_5"  x="0.04368" y="0" z="-0.95342"/>
+
+    <xacro:motor name="left_string_1"/>
+    <xacro:motor name="left_string_2"/>
+    <xacro:motor name="left_string_3"/>
+    <xacro:motor name="left_string_4"/>
+    <xacro:motor name="left_string_5"/>
+    <xacro:motor name="right_string_1"/>
+    <xacro:motor name="right_string_2"/>
+    <xacro:motor name="right_string_3"/>
+    <xacro:motor name="right_string_4"/>
+    <xacro:motor name="right_string_5"/>
+
+    <xacro:motor name="left_wheel_1"/>
+    <xacro:motor name="left_wheel_2"/>
+    <xacro:motor name="left_wheel_3"/>
+    <xacro:motor name="left_wheel_4"/> 
+    <xacro:motor name="left_wheel_5"/> 
+    <xacro:motor name="right_wheel_1"/>
+    <xacro:motor name="right_wheel_2"/>
+    <xacro:motor name="right_wheel_3"/>
+    <xacro:motor name="right_wheel_4"/> 
+    <xacro:motor name="right_wheel_5"/> 
+
+    <ros2_control name="MyRobotHardware" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="left_string_1_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_string_2_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_string_3_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_string_4_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_string_5_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_string_1_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_string_2_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_string_3_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_string_4_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_string_5_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="left_wheel_1_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_wheel_2_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_wheel_3_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_wheel_4_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="left_wheel_5_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_wheel_1_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_wheel_2_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_wheel_3_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_wheel_4_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_wheel_5_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="velocity"/>
+            <state_interface name="position"/>
+        </joint>
+
+    </ros2_control>
+
+</robot>

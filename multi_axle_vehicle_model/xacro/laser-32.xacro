@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<robot name="laser-32" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+  <link name="laser_base">
+    <inertial>
+      <mass value="0.83"/>
+      <origin xyz="0 0 0.03585"/>
+      <inertia ixx="${(0.83 * (3.0*0.0516*0.0516 + 0.0717*0.0717)) / 12.0}" ixy="0" ixz="0"
+        iyy="${(0.83 * (3.0*0.0516*0.0516 + 0.0717*0.0717)) / 12.0}" iyz="0"
+        izz="${0.5 * 0.83 * (0.0516*0.0516)}"/>
+    </inertial>
+    <visual>
+      <origin rpy="0  0  0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="$(find multi_axle_vehicle_model)/meshes/dae/VLP32_base_1.dae" />
+      </geometry>
+    </visual>
+    <visual>
+      <origin rpy="0  0  0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="$(find multi_axle_vehicle_model)/meshes/dae/VLP32_base_2.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.03585"/>
+      <geometry>
+        <cylinder radius="0.0516" length="0.0717"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="laser_center">
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" />
+      <geometry>
+        <mesh filename="$(find multi_axle_vehicle_model)/meshes/dae/VLP32_scan.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="laser_base_joint" type="fixed" >
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="laser_base" />
+    <child link="laser_center"/>
+  </joint>
+  
+    <gazebo reference="laser_center">
+      <sensor type="gpu_ray" name="gpu_ray">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>false</visualize>
+        <update_rate>60.0</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>3600</samples>
+              <resolution>0.36</resolution>
+              <min_angle>${-PI}</min_angle>
+              <max_angle>${PI}</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>128</samples>
+              <resolution>1</resolution>
+              <min_angle>${-16*PI/180}</min_angle>
+              <max_angle>${16*PI/180}</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.5</min>
+            <max>101</max>
+            <resolution>0.001</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.0</stddev>
+          </noise>
+        </ray>
+        <plugin name="gazebo_laser_controller" filename="/root/PersonalData/Program/multi-axle-all-wheel-steering-vehicles_ws/install/gazebo_ros_velodyne_changed/lib/libgazebo_ros_velodyne_changed.so">
+          <topic_update_rate>30.0</topic_update_rate>
+          <robotNamespace>/car</robotNamespace>
+          <topicName>laser</topicName>
+          <tf_prefix>laser_center</tf_prefix>
+          <organize_cloud>false</organize_cloud>
+          <organize_cloud>false</organize_cloud>
+          <min_range>0.5</min_range>
+          <max_range>100</max_range>
+          <gaussian_noise>0.008</gaussian_noise>
+        </plugin>
+      </sensor>
+  </gazebo>
+
+</robot>

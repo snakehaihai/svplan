@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>odom_plugin</name>
+  <version>0.0.1</version>
+  <description>A simple Gazebo plugin to publish odometry data</description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>Apache 2.0</license>
+
+  <url type="website">http://example.com</url>
+  <author email="you@example.com">Your Name</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>gazebo_dev</depend>
+  <depend>gazebo_ros</depend>
+  <depend>rclcpp</depend>
+  <depend>nav_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
