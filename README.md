@@ -1,5 +1,14 @@
-# svplan
-Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle AMRs
+<div align="center">
+  <h1>SVPLAN</h1>
+  <h2>Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle AMRs</h2>
+  <p><strong>This work is available on <i>arXiv</i>.</strong></p>
+  <br>
+
+  [![Code](https://img.shields.io/badge/Code-GitHub-blue?logo=github)](https://github.com/ccwss-maker/svplan)
+  [![arXiv](https://img.shields.io/badge/arXiv-2412.16875-b31b1b.svg)](https://arxiv.org/abs/2412.16875)
+  [![Video](https://img.shields.io/badge/Video-YouTube-red?logo=youtube)](https://youtu.be/LU1L7FAnooU)
+</div>
+
 ==============================================================================
 This repository contains the official implementation of the paper:
 "Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs"
