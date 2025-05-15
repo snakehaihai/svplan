@@ -17,7 +17,8 @@ arXiv:2412.16875v2
   <img src="images/1.gif" alt="Simulation Result">
   <img src="images/2.gif" alt="Simulation Result">
 </p>
-Tested Environment
+
+## 🛠 Tested Environment
 ------------------
 
 - Ubuntu 22.04
@@ -29,7 +30,7 @@ Tested Environment
 - LBFGSpp v0.4.0
 - PCL v1.14.0
 
-Dependencies
+## 📦 Dependencies
 ------------
 
 Install required ROS 2 packages:
@@ -90,7 +91,7 @@ Add to .bashrc:
 echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
 ```
 
-Build Instructions
+## 🛠 Build Instructions
 ------------------
 
 1. Create workspace and clone code:
@@ -145,7 +146,7 @@ echo "source ~/multi-axle-all-wheel-steering-vehicles_ws/install/setup.bash" >> 
 source ~/.bashrc
 ```
 
-Launch & Run
+## 🛠 Launch & Run
 ------------
 
 ```bash
@@ -157,7 +158,7 @@ ros2 run control_mpc control_mpc
 ![Simulation Result](images/2.jpg)
 
 
-Citation
+## 📄 Citation
 --------
 
 If you find this work helpful, please cite:
