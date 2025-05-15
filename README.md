@@ -9,7 +9,7 @@
   [![Video](https://img.shields.io/badge/Video-YouTube-red?logo=youtube)](https://youtu.be/LU1L7FAnooU)
 </div>
 
-==============================================================================
+---
 This repository contains the official implementation of the paper:
 "Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs"
 arXiv:2412.16875v2
