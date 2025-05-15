@@ -153,10 +153,12 @@ Citation
 
 If you find this work helpful, please cite:
 ```bibtex
-@article{hu2024swept,
-  title={Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs},
-  author={Hu, Tianxin and Yuan, Shenghai and Bai, Ruofei and Xu, Xinhang and Liao, Yuwen and Liu, Fen and Xie, Lihua},
-  journal={arXiv preprint arXiv:2412.16875},
-  year={2024}
+@inproceedings{huswept2024,
+  author       = {Hu, Tianxin and Yuan, Shenghai and Bai, Ruofei and Xu, Xinghang},
+  booktitle    = {Proceedings of the 2025 IEEE International Conference on Robotics and Automation (ICRA)},
+  title        = {Swept Volume-Aware Trajectory Planning and MPC Tracking for Multi-Axle Swerve-Drive AMRs},
+  year         = {2025},
+  month        = {May},
+  address      = {Atlanta, USA}
 }
 ```
