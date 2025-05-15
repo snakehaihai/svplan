@@ -171,3 +171,17 @@ If you find this work helpful, please cite:
   address      = {Atlanta, USA}
 }
 ```
+
+## 🤝 Acknowledgment
+This project is inspired by and builds upon ideas from:
+- [Continuous Implicit SDF Based Any-shape Robot Trajectory Optimization (Implicit-SDF-Planner)](https://github.com/ZJU-FAST-Lab/Implicit-SDF-Planner)
+- [Implicit Swept Volume SDF: Enabling Continuous Collision-Free Trajectory Generation for Arbitrary Shapes (Implicit-SVSDF-Planner)](https://github.com/ZJU-FAST-Lab/Implicit-SVSDF-Planner)
+
+We sincerely thank the authors for their open-source contributions.
+
+---
+
+## 📜 License
+This project is released under the [MIT License](LICENSE).
+
+---
